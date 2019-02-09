@@ -23,6 +23,8 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+*.whl
+make_upload_wheel.sh
 MANIFEST
 
 # PyInstaller
