@@ -1,4 +1,7 @@
+#!/usr/bin/python3
 import requests
+from string import ascii_letters, digits
+from random import choice
 class HFContest:
     """ Class to achieve flags for users"""
     def __init__(self, url, contest, task, task_token, user_token = ""):
@@ -25,19 +28,22 @@ class HFContest:
         """ Check user token lenght """
         return isinstance(user_token, str) and len(user_token) == 80
 
-    def check_task(self, user_token = '', flag=' '):
+    def random_flag(self):
+        return ''.join(choice(ascii_letters + digits) for _ in range(30))
+
+    def approve_task(self, user_token = '', flag = ''):
         """ Check task on the selected server """
         user_token = user_token if len(user_token) > 0 else self.user_token
         if not self.check_user_token(user_token):
             return -1, 'User token in incorrect format!'
         data = {
-            'flag': flag,
+            'flag': flag if flag is not '' else self.random_flag(),
             'contest_guid': self.contest,
             'task_guid': self.task,
             'task_token': self.task_token,
             'token': user_token
         }
-        headers = {'user-agent': 'hackforces-client-py/0.0.1'}
+        headers = {'user-agent': 'hackforces-client-py/0.0.2'}
         try:
             r = requests.post("{}/api/task.check".format(self.url), data=data, headers=headers, timeout=5)
             if r.status_code == 200:
@@ -46,9 +52,9 @@ class HFContest:
                 try:
                     msg = r.json()['message']
                     return r.status_code, msg
-                except:
+                except Exception as ex:
                     return r.status_code, r.text
             else:
-                    return r.status_code, r.text
+                return r.status_code, r.text
         except requests.exceptions.RequestException as ex:
             return -1, ex

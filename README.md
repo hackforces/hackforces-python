@@ -31,7 +31,7 @@ python setup.py install --user
 ```python
 from hackforces import HFContest
 contest = HFContest(url, contest, task, task_token, user_token='') # initial of instance
-contest.check_task(user_token='', flag=' ') # send request after successfully completed task (if user fails, don't use this)
+contest.approve_task(user_token='', flag='') # send request after successfully completed task (if user fails, don't use this)
 ```
 
 - `url` **(required)** - address of api in the internet (without tailing **/api/**)
